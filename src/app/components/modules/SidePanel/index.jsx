@@ -57,7 +57,7 @@ const SidePanel = ({
 
     const sidePanelLinks = {
         internal: [
-             {
+            {
                 value: 'engine',
                 label: 'Leo Dex',
                 link: 'https://leodex.io/market/BUIDL',
@@ -72,26 +72,15 @@ const SidePanel = ({
                 label: 'Tribal Dex',
                 link: 'https://tribaldex.com/trade/BUIDL',
             },
+        ],
+        external: [
             {
-                value: 'engine',
                 label: 'LitePaper',
                 link: 'https://eu.docworkspace.com/d/sIHWUtOWLAYXB1pIG',
             },
             {
-                value: 'engine',
-                label: 'NFTs',
-                link: 'https://nftshowroom.com/build-it/gallery',
-            },
-            {
-                value: 'engine',
                 label: 'FAQ',
                 link: '/faq.html',
-            },
-        ],
-        external: [
-            {
-                label: tt('navigation.chat'),
-                link: 'https://openhive.chat/home',
             },
         ],
 
@@ -99,12 +88,9 @@ const SidePanel = ({
 
         legal: [
             {
-                label: tt('navigation.privacy_policy'),
-                link: '/privacy.html',
-            },
-            {
-                label: tt('navigation.terms_of_service'),
-                link: '/tos.html',
+                value: 'engine',
+                label: 'NFTs',
+                link: 'https://nftshowroom.com/build-it/gallery',
             },
         ],
 
@@ -161,9 +147,30 @@ const SidePanel = ({
                 )}
 
                 <ul className="vertical menu">
+                 <li>
+                  <a className="menu-section">Buy {'$buidl'}</a>
+                 </li>
                     {(sidePanelLinks['internal_' + scotTokenSymbol]
                         ? sidePanelLinks['internal_' + scotTokenSymbol]
                         : sidePanelLinks['internal']
+                    ).map(makeLink)}
+                </ul>
+                <ul className="vertical menu">
+                 <li>
+                  <a className="menu-section">Resources</a>
+                 </li>
+                    {(sidePanelLinks['external_' + scotTokenSymbol]
+                        ? sidePanelLinks['external_' + scotTokenSymbol]
+                        : sidePanelLinks['external']
+                    ).map(makeLink)}
+                </ul>
+                <ul className="vertical menu">
+                 <li>
+                  <a className="menu-section">Buy Arts</a>
+                 </li>
+                    {(sidePanelLinks['legal_' + scotTokenSymbol]
+                        ? sidePanelLinks['legal_' + scotTokenSymbol]
+                        : sidePanelLinks['legal']
                     ).map(makeLink)}
                 </ul>
             </div>
