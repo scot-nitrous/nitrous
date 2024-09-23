@@ -22,6 +22,7 @@ input, textarea, select {
     // Overwrite 16px margin-bottom, it was pushing error messages down away from the form element
     margin-bottom: 0px !important;
 }
+
 .error {
     color: $alert-color;
     margin-bottom: 10px;
@@ -70,8 +71,8 @@ p.error {
 
 label {
   @include themify($themes) {
-    color: themed('textColorPrimary');  
-  }    
+    color: themed('textColorPrimary');
+  }
 }
 
 $input-font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;

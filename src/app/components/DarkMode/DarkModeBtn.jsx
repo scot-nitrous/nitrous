@@ -3,7 +3,7 @@ import moondark from './moon.png';
 import moonlight from './moon_light.png';
 const DarkModeBtn = ({ toggleBody }) => {
     return (
-        <div style={{ marginLeft: '20px' }}>
+        <div style={{ marginLeft: '2px' }}>
             <button
                 id="darkMode"
                 style={{ cursor: 'pointer' }}

@@ -26,12 +26,14 @@ import DropdownMenu from 'app/components/elements/DropdownMenu';
 import Icon from 'app/components/elements/Icon';
 import classNames from 'classnames';
 import FormattedAssetTokens from 'app/components/elements/FormattedAssetTokens';
+import axios from 'axios';
 
 class UserWallet extends React.Component {
     constructor() {
         super();
         this.state = {
             claimInProgress: false,
+            buidlprice:0,
         };
         this.onShowDepositSteem = e => {
             if (e && e.preventDefault) e.preventDefault();
@@ -118,6 +120,36 @@ class UserWallet extends React.Component {
             scotVestingToken,
             useHive,
         } = this.props;
+        //axios with buidl token
+        axios
+        .request({
+            method: 'POST',
+            url: 'https://ha.herpc.dtools.dev/contracts',
+            headers: { 'Content-Type': 'application/json' },
+            data: {
+                jsonrpc: '2.0',
+                id: 1,
+                method: 'findOne',
+                params: {
+                    contract: 'market',
+                    table: 'metrics',
+                    query: { symbol: 'BUIDL' },
+                    offset: 0,
+                    limit: 1000,
+                },
+            },
+        })
+        .then(response => {
+            let buidlToken = response.data.result.lastPrice.toLocaleString(
+                'en-US'
+            );
+            this.setState({
+                buidlprice: buidlToken,
+            });
+        })
+        .catch(function(error) {
+            console.error(error);
+        });
 
         // do not render if profile is not loaded or available
         if (
@@ -384,7 +416,9 @@ class UserWallet extends React.Component {
         const power_balance_str = numberWithCommas(vesting_steem.toFixed(3));
         const native_token_str = useHive ? 'Hive' : 'Steem';
         const native_token_str_upper = useHive ? 'HIVE' : 'STEEM';
-
+        const sbs = Number(stake_balance_str.split(" ").join(""));
+        const EAV = sbs + parseFloat(balance_str);
+        const TotalEav = EAV * this.state.buidlprice;
         return (
             <div className="UserWallet">
                 {claimbox}
@@ -486,105 +520,31 @@ class UserWallet extends React.Component {
                     </div>
                 )}
                 <hr />
-                {/* STEEM */}
+                {/* Savings */}
                 <div className="UserWallet__balance row">
                     <div className="column small-12 medium-8">
-                        {native_token_str_upper}
-                        <FormattedHTMLMessage
-                            className="secondary"
-                            id="tips_js.liquid_token"
-                            params={{
-                                LIQUID_TOKEN: native_token_str,
-                                VESTING_TOKEN: `${
-                                    native_token_str_upper
-                                } POWER`,
-                            }}
-                        />
-                    </div>
-                    <div className="column small-12 medium-4">
-                        {isMyAccount ? (
-                            <DropdownMenu
-                                className="Wallet_dropdown"
-                                items={steem_menu}
-                                el="li"
-                                selected={`${steem_balance_str} ${
-                                    native_token_str_upper
-                                }`}
-                            />
-                        ) : (
-                            `${steem_balance_str} ${native_token_str_upper}`
-                        )}
-                    </div>
-                </div>
-                {/* STEEM POWER */}
-                <div className="UserWallet__balance row zebra">
-                    <div className="column small-12 medium-8">
-                        {native_token_str_upper} POWER
-                        <FormattedHTMLMessage
-                            className="secondary"
-                            id="tips_js.influence_token"
-                        />
-                        {delegated_steem != 0 ? (
-                            <span className="secondary">
-                                {tt(
-                                    'tips_js.part_of_your_hive_power_is_currently_delegated',
-                                    { user_name: profile.get('name') }
-                                )}
-                            </span>
-                        ) : null}
-                    </div>
-                    <div className="column small-12 medium-4">
-                        {isMyAccount ? (
-                            <DropdownMenu
-                                className="Wallet_dropdown"
-                                items={steem_power_menu}
-                                el="li"
-                                selected={`${power_balance_str}  ${
-                                    native_token_str_upper
-                                }`}
-                            />
-                        ) : (
-                            `${power_balance_str}  ${native_token_str_upper}`
-                        )}
-                        {delegated_steem != 0 ? (
-                            <div
-                                style={{
-                                    paddingRight: isMyAccount
-                                        ? '0.85rem'
-                                        : null,
-                                }}
-                            >
-                                <Tooltip
-                                    t={`${
-                                        native_token_str_upper
-                                    } POWER delegated to/from this account`}
-                                >
-                                    ({received_power_balance_str}{' '}
-                                    {native_token_str_upper})
-                                </Tooltip>
-                            </div>
-                        ) : null}
-                    </div>
-                </div>
-                {/* Steem Dollars */}
-                <div className="UserWallet__balance row">
-                    <div className="column small-12 medium-8">
-                        {native_token_str_upper} DOLLARS
+                        SAVINGS
                         <div className="secondary">
-                            {tt('userwallet_jsx.tradeable_tokens_transferred')}
+                        Balances subject to 3 day withdraw waiting period.
+                        <p>HBD interest rate: 20.00% APR (as voted by the Witnesses)</p>
                         </div>
                     </div>
                     <div className="column small-12 medium-4">
-                        {isMyAccount ? (
-                            <DropdownMenu
-                                className="Wallet_dropdown"
-                                items={steem_power_menu}
-                                el="li"
-                                selected={sbd_balance_str}
-                            />
-                        ) : (
-                            sbd_balance_str
-                        )}
+                        0.000 {scotTokenSymbol}
+                        <p>$0.000</p>
+                    </div>
+                </div>
+                <hr />
+                {/* Dollars Estimated Value*/}
+                <div className="UserWallet__balance row">
+                    <div className="column small-12 medium-8">
+                        Estimated Account Value
+                        <div className="secondary">
+                        The estimated value is based on an average value of Buidl in US dollars.
+                        </div>
+                    </div>
+                    <div className="column small-12 medium-4">
+                        ${(TotalEav.toFixed(8))}
                     </div>
                 </div>
                 <hr />

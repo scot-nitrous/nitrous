@@ -1,9 +1,120 @@
-import React from 'react';
+import React, { Component } from 'react';
 import tt from 'counterpart';
+import { Link } from 'react-router';
+import axios from 'axios';
 import {
     formatDecimal,
     parsePayoutAmount,
 } from 'app/utils/ParsersAndFormatters';
+
+class Livefeed extends Component {
+    state = {
+     buidlprice: 'buidl',
+     hive: 'hive',
+     bitcoin: 'bitcoin',
+    };
+
+    componentDidMount() {
+        fetch(
+            'https://api.coingecko.com/api/v3/simple/price?ids=hive&vs_currencies=usd'
+        )
+            .then(response => response.json())
+            .then(data => {
+                this.setState({
+                    hive: data.hive.usd.toLocaleString(
+                        'en-US'
+                    )
+                });
+            });
+            fetch(
+                'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd'
+            )
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        bitcoin: data.bitcoin.usd.toLocaleString(
+                            'en-US'
+                        )
+                    });
+                });
+    }
+
+    render() {
+        axios
+        .request({
+            method: 'POST',
+            url: 'https://ha.herpc.dtools.dev/contracts',
+            headers: { 'Content-Type': 'application/json' },
+            data: {
+                jsonrpc: '2.0',
+                id: 1,
+                method: 'findOne',
+                params: {
+                    contract: 'market',
+                    table: 'metrics',
+                    query: { symbol: 'BUIDL' },
+                    offset: 0,
+                    limit: 1000,
+                },
+            },
+        })
+        .then(response => {
+            let buidlToken = response.data.result.lastPrice.toLocaleString(
+                'en-US'
+            );
+            this.setState({
+                buidlprice: buidlToken,
+            });
+        })
+        .catch(function(error) {
+            console.error(error);
+        });
+        const buidl = this.state.buidlprice;
+        const btc = this.state.bitcoin;
+        const hive =this.state.hive;
+        return (
+            <div>
+            <div className="c-sidebar__module">
+                <h5>
+                    <b>Live Price Feed</b>
+                </h5>
+                <br />
+                <h5>
+                    {' '}
+                    <b>{btc} USD</b>
+                </h5>
+                <p>
+                    Bitcoin Market Value by{' '}
+                    <a href="https://www.coingecko.com/en/coins/bitcoin">
+                        @Coingecko
+                    </a>
+                </p>
+                <hr />
+                <h5>
+                    <b>{hive} USD</b>
+                </h5>
+                <p>
+                    Hive Market Value by{' '}
+                    <a href="https://www.coingecko.com/en/coins/hive">
+                        @Coingecko
+                    </a>
+                </p>
+                <hr />
+                <h5>
+                    {' '}
+                    <b>{buidl} USD</b>
+                </h5>
+                <p>
+                    Buidl Market Value by{' '}
+                    <a href="https://hive-engine.com/trade/BUIDL">
+                        @Hive-Engine
+                    </a>
+                </p>
+            </div>
+        </div>
+        );
+    }
+}
 
 const SidebarToken = ({
     scotToken,
@@ -39,89 +150,18 @@ const SidebarToken = ({
     );
 
     return (
+        <div>
         <div className="c-sidebar__module">
-            <div className="c-sidebar__header">
-                <div className="SidebarToken__header">
-                    <h3 className="c-sidebar__h3">
-                        <a
-                            href={`https://${
-                                useHive ? 'hive' : 'steem'
-                            }-engine.com/?p=market&t=${scotToken}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            {scotToken}
-                        </a>
-                    </h3>
-                </div>
-            </div>
-            <div className="c-sidebar__content">
-                <ul className="c-sidebar__list-small">
-                    <li className="c-sidebar__list-item">
-                        <div className="SidebarToken__item">
-                            <div>{tt('g.total')}</div>
-                            <div>
-                                <span className="integer">{total[0]}</span>
-                                <span className="decimal">{total[1]}</span>
-                            </div>
-                        </div>
-                    </li>
-                    <li className="c-sidebar__list-item">
-                        <div className="SidebarToken__item">
-                            <div>
-                                {tt('g.circulating')} (
-                                <span className="integer">
-                                    {circulatingRate[0]}
-                                </span>
-                                <span className="decimal">
-                                    {circulatingRate[1]}
-                                </span>
-                                %)
-                            </div>
-                            <div>
-                                <span className="integer">
-                                    {circulating[0]}
-                                </span>
-                                <span className="decimal">
-                                    {circulating[1]}
-                                </span>
-                            </div>
-                        </div>
-                    </li>
-                    <li className="c-sidebar__list-item">
-                        <div className="SidebarToken__item">
-                            <div className="SidebarToken__burn">
-                                {tt('g.burn')} (
-                                <span className="integer">{burnRate[0]}</span>
-                                <span className="decimal">{burnRate[1]}</span>
-                                %)
-                            </div>
-                            <div className="SidebarToken__burn">
-                                <span className="integer">{burn[0]}</span>
-                                <span className="decimal">{burn[1]}</span>
-                            </div>
-                        </div>
-                    </li>
-                    <li className="c-sidebar__list-item">
-                        <div className="SidebarToken__item">
-                            <div>
-                                {tt('g.staking')} (
-                                <span className="integer">
-                                    {stakingRate[0]}
-                                </span>
-                                <span className="decimal">
-                                    {stakingRate[1]}
-                                </span>
-                                %)
-                            </div>
-                            <div>
-                                <span className="integer">{staking[0]}</span>
-                                <span className="decimal">{staking[1]}</span>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+        <h5>
+         <b>Explore Build-it ?</b>
+       </h5>
+        <br />
+        <p className='articles__h2 entry-title announce'>
+           <Link to="/faq.html">
+            Frequently Asked Questions.
+           </Link></p>
+     </div>
+     <Livefeed />
         </div>
     );
 };

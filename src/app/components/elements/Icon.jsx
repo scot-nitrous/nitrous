@@ -5,6 +5,7 @@ export const icons = [
     'user',
     'share',
     'chevron-up-circle',
+    'chevron-up-circle-red',
     'chevron-down-circle',
     'chevron-left',
     'chatboxes',

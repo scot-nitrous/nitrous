@@ -360,6 +360,12 @@ class Header extends React.Component {
                             />
                         </div>
                         <div className="small-7 large-4 columns Header__buttons">
+                             {/*CUSTOM SEARCH*/}
+                            <span className="Header__search">
+                                <a href="/search">
+                                    <IconButton icon="magnifyingGlass" />
+                                </a>
+                            </span>
                             {/*NOT LOGGED IN SIGN IN AND SIGN UP LINKS*/}
                             {!loggedIn && (
                                 <span className="Header__user-signup show-for-medium">
@@ -384,7 +390,7 @@ class Header extends React.Component {
                             )}
 
                             {/*SUBMIT STORY*/}
-                            {submit_story} 
+                            {submit_story}
                             {/*DARKMODE TOGGLE*/}
                             <DarkModeBtn toggleBody={toggleBody} />
                             {/*USER AVATAR */}
