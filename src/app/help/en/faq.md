@@ -67,6 +67,7 @@ through the use of Blockchain technology. Since it is a distributed ledger, all 
 participants share the same documentation as opposed to individual copies.
 
 - Increased performance and speed: Unlike our centralized traditional entities that
+
 utilize paper-heavy process which consumes a significant amount of time and are
 prone to human error. By streamlining and automating these processes with
 blockchain,transactions are lighting fast and efficient.
@@ -106,6 +107,7 @@ point).
 the communities.
 
 - Get some $buidl tokens. Being a stake holder of the token also makes you a
+
 shareholder of revenue generated from the network.
 
 iv. Be friendly :)
@@ -162,6 +164,7 @@ withdrawal,and a few other transactions.
 Gentle reminder,always save all your keys and keep it safe. Remember not to share
 your keys with projects not associated with Build-it, unless otherwise stated.
 
+
 <a href="#Table_of_Contents_Accounts">^</a>
 # Economics
 
@@ -195,6 +198,7 @@ community members will share love by ‘upvoting’ your posts. The upvotes come
 BUIDL token,depending on the upvotes you receive, you may get a portion of the “rewards pool”
 
 - **Voting and curating** - Giving hearts to other authors for their valued content
+
 is known as voting. If you discover a newly published post and vote on it before
 others do,you earn a curation reward for that said content. Remember, the higher
 your BUIDL POWER, the more curation reward you earn.
@@ -213,6 +217,7 @@ Below are some pretty basic usecases for the $buidl token:
 sending and receiving payments for products and services at an increasingly low fee
 and 3sec transaction speed.
 - Proof of censorship-resistant store of value - While our local bank keeps freezing
+
 and blocking our bank assets accounts, truth be told - this act occurs more often
 than people realize most. Holding the $buidl token gives each holder a
 censorship-resistant alternative store of wealth as long as they have their private

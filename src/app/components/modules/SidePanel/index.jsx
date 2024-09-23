@@ -72,6 +72,11 @@ const SidePanel = ({
                 label: 'Tribal Dex',
                 link: 'https://tribaldex.com/trade/BUIDL',
             },
+            {
+                value: 'engine',
+                label: 'FAQ',
+                link: '/faq.html',
+            },
         ],
         external: [
             {
