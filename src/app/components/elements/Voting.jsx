@@ -18,6 +18,7 @@ import { getDate } from 'app/utils/Date';
 import DropdownMenu from 'app/components/elements/DropdownMenu';
 import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
 import Dropdown from 'app/components/elements/Dropdown';
+import axios from 'axios';
 
 const ABOUT_FLAG = (
     <div>
@@ -65,6 +66,7 @@ class Voting extends React.Component {
         super(props);
         this.state = {
             showWeight: false,
+            buidlprice: 0,
             sliderWeight: {
                 up: MAX_WEIGHT,
                 down: MAX_WEIGHT,
@@ -221,6 +223,36 @@ class Voting extends React.Component {
             useHive,
         } = this.props;
 
+        axios
+        .request({
+            method: 'POST',
+            url: 'https://ha.herpc.dtools.dev/contracts',
+            headers: { 'Content-Type': 'application/json' },
+            data: {
+                jsonrpc: '2.0',
+                id: 1,
+                method: 'findOne',
+                params: {
+                    contract: 'market',
+                    table: 'metrics',
+                    query: { symbol: 'BUIDL' },
+                    offset: 0,
+                    limit: 1000,
+                },
+            },
+        })
+        .then(response => {
+            let buidlToken = response.data.result.lastPrice.toLocaleString(
+                'en-US'
+            );
+            this.setState({
+                buidlprice: buidlToken,
+            });
+        })
+        .catch(function(error) {
+            console.error(error);
+        });
+
         const { votingUp, votingDown, showWeight, showWeightDir } = this.state;
 
         // Incorporate regeneration time.
@@ -271,21 +303,22 @@ class Voting extends React.Component {
             rewardData.pending_rshares;
 
         let rsharesTotal = 0;
-        
+
         if (scotData) {
-            rsharesTotal = parseFloat(scotData.get('vote_rshares'));
+            //abod new tag
+            rsharesTotal = parseFloat(scotData.get('vote_rshares') * this.state.buidlprice);
             scot_pending_token = applyRewardsCurve(rsharesTotal);
 
             scot_total_curator_payout = parseFloat(
-                scotData.get('curator_payout_value')
+                scotData.get('curator_payout_value') * this.state.buidlprice
             );
             scot_total_author_payout = parseFloat(
-                scotData.get('total_payout_value')
+                scotData.get('total_payout_value') * this.state.buidlprice
             );
             scot_token_bene_payout = parseFloat(
-                scotData.get('beneficiaries_payout_value')
+                scotData.get('beneficiaries_payout_value') * this.state.buidlprice
             );
-            promoted = parseFloat(scotData.get('promoted'));
+            promoted = parseFloat(scotData.get('promoted') * this.state.buidlprice);
             decline_payout = scotData.get('decline_payout');
             scot_total_author_payout -= scot_total_curator_payout;
             scot_total_author_payout -= scot_token_bene_payout;
@@ -321,7 +354,7 @@ class Voting extends React.Component {
                     (up ? currentVp : currentDownvotePower) /
                     (10000 * 100);
                 const newValue = applyRewardsCurve(rsharesTotal + rshares);
-                valueEst = (newValue - scot_pending_token).toFixed(
+                valueEst = (newValue - scot_pending_token ).toFixed(
                     scotPrecision
                 );
             }
@@ -367,10 +400,12 @@ class Voting extends React.Component {
         let downVote;
         if (downvoteEnabled) {
             const down = (
+                <a href='here' title="Downvote" id="upvote_button">
                 <Icon
                     name={votingDownActive ? 'empty' : 'chevron-down-circle'}
                     className="flag"
                 />
+                </a>
             );
             const classDown =
                 'Voting__button Voting__button-down' +
@@ -454,10 +489,20 @@ class Voting extends React.Component {
         }
 
         const up = (
+            <a href='here' title="Upvote" id="upvote_button">
             <Icon
                 name={votingUpActive ? 'empty' : 'chevron-up-circle'}
                 className="upvote"
             />
+            </a>
+        );
+        const ups = (
+            <a href='here' title="Upvote" id="upvote_button">
+            <Icon
+                name={votingUpActive ? 'empty' : 'chevron-up-circle-red'}
+                className="upvote"
+            />
+            </a>
         );
         const classUp =
             'Voting__button Voting__button-up' +
@@ -477,9 +522,7 @@ class Voting extends React.Component {
         } else if (cashout_active) {
             payoutItems.push({ value: 'Pending Payout' });
             payoutItems.push({
-                value: `${scot_pending_token.toFixed(scotPrecision)} ${
-                    hostConfig['LIQUID_TOKEN_UPPERCASE']
-                }`,
+                value: `$${scot_pending_token.toFixed(scotPrecision)}`,
             });
             payoutItems.push({
                 value: <TimeAgoWrapper date={cashout_time} />,
@@ -488,26 +531,20 @@ class Voting extends React.Component {
             // - payout instead of total_author_payout: total_author_payout can be zero with 100% beneficiary
             // - !cashout_active is needed to avoid the info is also shown for pending posts.
             payoutItems.push({
-                value: `Past Token Payouts ${payout.toFixed(scotPrecision)} ${
-                    hostConfig['LIQUID_TOKEN_UPPERCASE']
-                }`,
+                value: `Past Token Payouts $${payout.toFixed(8)}`,
             });
             payoutItems.push({
-                value: `- Author ${scot_total_author_payout.toFixed(
-                    scotPrecision
-                )} ${hostConfig['LIQUID_TOKEN_UPPERCASE']}`,
+                value: `- Author $${scot_total_author_payout.toFixed(8)}`,
             });
             payoutItems.push({
-                value: `- Curator ${scot_total_curator_payout.toFixed(
-                    scotPrecision
-                )} ${hostConfig['LIQUID_TOKEN_UPPERCASE']}`,
+                value: `- Curator $${scot_total_curator_payout.toFixed(8)}`,
             });
             // Uncomment to enable
             if (false && scot_token_bene_payout > 0 && tokenBeneficiary) {
                 payoutItems.push({
                     value: `- Token Benefactor ${scot_token_bene_payout.toFixed(
                         scotPrecision
-                    )} ${LIQUID_TOKEN_UPPERCASE}`,
+                    )} ${'LIQUID_TOKEN_UPPERCASE'}`,
                 });
             }
         }
@@ -555,7 +592,8 @@ class Voting extends React.Component {
                 <span>
                     <FormattedAsset
                         amount={payout}
-                        asset={hostConfig['LIQUID_TOKEN_UPPERCASE']}
+                        //Abod for the token name beside price
+                        asset={'$'}
                         classname={decline_payout ? 'strikethrough' : ''}
                     />
                     {payoutItems.length > 0 && <Icon name="dropdown-arrow" />}
@@ -611,7 +649,8 @@ class Voting extends React.Component {
             ) {
                 const { percent, voter, estimate } = avotes[v];
                 const sign = Math.sign(percent);
-                const estimateStr = estimate ? ` (${estimate})` : '';
+                const conEstimate = estimate * this.state.buidlprice;
+                const estimateStr = '$'+conEstimate.toFixed(8) ? ` (${'$'+conEstimate.toFixed(8)})` : '';
                 if (sign === 0) continue;
                 voters.push({
                     value: (sign > 0 ? '+ ' : '- ') + voter + estimateStr,
@@ -729,6 +768,7 @@ export default connect(
             throw 'post not found';
         }
         const scotConfig = state.app.get('scotConfig');
+        //token itself
         const scotData = post.getIn([
             'scotData',
             hostConfig['LIQUID_TOKEN_UPPERCASE'],

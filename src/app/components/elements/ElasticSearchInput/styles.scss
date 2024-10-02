@@ -10,7 +10,7 @@ form.search-input {
         }
         stroke-width: 1.2;
         fill: none;
-        
+
     }
 
     input.search-input__inner {
@@ -29,7 +29,7 @@ form.search-input {
         transition: all 0.3s ease-in-out;
         font-family: $font-primary;
         border: 1px solid rgba(173, 173, 173, 0.6);
-        
+
         &::placeholder {
             color: transparent
         }
@@ -58,10 +58,5 @@ form.search-input {
                 }
             }
         }
-    }
-
-    /* small */
-    input.search-input__inner.search-input__inner--small {
-
     }
 }

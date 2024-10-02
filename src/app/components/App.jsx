@@ -21,7 +21,7 @@ class App extends React.Component {
         // TODO: put both of these and associated toggles into Redux Store.
         this.state = {
             showCallout: true,
-            showBanner: false,
+            showBanner: true,
         };
         this.listenerActive = null;
     }
@@ -225,9 +225,8 @@ class App extends React.Component {
 
                 <div className="App__content">
                     {process.env.BROWSER &&
-                    ip &&
-                    new_visitor &&
-                    this.state.showBanner ? (
+                    this.state.showBanner &&
+                    pathname === '/' ? (
                         <WelcomePanel
                             setShowBannerFalse={this.setShowBannerFalse}
                         />
