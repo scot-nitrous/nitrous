@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import tt from 'counterpart';
 import { search } from 'app/redux/SearchReducer';
-import Callout from 'app/components/elements/Callout';
 import ElasticSearchInput from 'app/components/elements/ElasticSearchInput';
 import PostsList from 'app/components/cards/PostsList';
 import { List, Map, fromJS } from 'immutable';
@@ -94,11 +93,6 @@ class SearchIndex extends React.Component {
                             />
                         </div>
                     </div>
-                    {!loading && result.length === 0 ? (
-                        <Callout>{'Nothing was found.'}</Callout>
-                    ) : (
-                        searchResults
-                    )}
                 </article>
             </div>
         );
