@@ -5,8 +5,8 @@ const BUIDL = {
     APP_ICON: 'build-it',
     APP_ICON_WIDTH: '150px',
     APP_ICON_HEIGHT: '40px',
-    APP_URL: 'https://www.build-it.io',
-    APP_DOMAIN: 'www.build-it.io',
+    APP_URL: 'https://www.buildl-it.com',
+    APP_DOMAIN: 'www.buildl-it.com',
     LIQUID_TOKEN: 'BUIDL',
     LIQUID_TOKEN_UPPERCASE: 'BUIDL',
     APP_MAX_TAG: 10,
@@ -45,7 +45,8 @@ const BUIDL = {
 export const CONFIG_MAP = {
     // testing heroku/local options
     'localhost:8080': BUIDL,
-    'www.build-it.io': BUIDL,
+    'www.buildl-it.com': BUIDL,
+    'buildl-it.com': BUIDL,
 };
 
 export const HIVE_SIGNER_APP = 'ewd';
